@@ -1,0 +1,25 @@
+function gp
+    set text (uname --operating-system), (date)
+    git add -A;git commit -m "$text";git push $argv;
+end
+
+function venv
+  python -m venv .venv $argv;
+  .venv/bin/python -m pip install -U pip setuptools wheel pip-tools yapf autoflake isort coverage $argv;
+end
+
+function envrc
+  printf "#!/data/data/com.termux/files/usr/bin/bash \nsource .venv/bin/activate" > .envrc;direnv allow
+end
+
+function ff --description 'Как **, но возвращает только обычные файлы.'
+    # Это также игнорирует каталоги .git.
+    find . \( -name .git -type d -prune \) -o -type f | \
+     sed -n -e '/^\.\/\.git$/n' -e 's/^\.\///p'
+end
+
+alias zz='git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+set -gx fish_user_paths ~/go/bin $fish_user_paths
+set XDG_CONFIG_HOME ~/.config
+set XDG_DATA_HOME ~/.local/share
